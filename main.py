@@ -3,17 +3,36 @@ from ursina.prefabs.first_person_controller import FirstPersonController
 
 app = Ursina()
 
-jump_height = 2 # Default: 2
+jump_height = 1.5 # Default: 2
 jump_duration = 0.5 # Default: 0.5
-jump_fall_after = 0.35 # Default: 0.35
-gravity_scale = 1 # Default: 1
-mouse_sensitivity = Vec2(40,40) # Default: (40,40)
-run_speed = 5 # Default: 5
+jump_fall_after = 0.05 # Default: 0.35
+gravity_scale = 1.25 # Default: 1
+mouse_sensitivity = Vec2(50,50) # Default: (40,40)
+run_speed = 7.5 # Default: 5
 
 window.fps_counter.enabled = False
 window.exit_button.visible = False
+mouse.visible = False
+
+#cursor =  Cursor(
+#    model=Mesh(
+#        vertices=[(-.5,0,0),(.5,0,0),(0,-.5,0),(0,.5,0)],
+#        triangles=[(0,1),(2,3)],
+#        mode='line',
+#        thickness=2
+#    ),
+#    scale=0.02
+#)
 
 punch = Audio('assets/punch', autoplay=False)
+
+cube = Entity(
+    model='cube',
+    color=color.blue,
+    texture='white_cube',
+    position=Vec3(10, 5, 5),
+    scale=2
+)
 
 blocks = [
     load_texture('assets/grass.png'), # 0
@@ -56,6 +75,8 @@ def update():
         hand.position = Vec2(0.4, -0.5)
     else:
         hand.position = Vec2(0.6, -0.6)
+    cube.rotation_x = cube.rotation_x + 0.25
+    cube.rotation_y = cube.rotation_y + 0.5
 
 class Voxel(Button):
     def __init__(self, position=(0, 0, 0), texture='assets/grass.png'):
@@ -72,9 +93,9 @@ class Voxel(Button):
     def input(self, key):
         if self.hovered:
             if key == 'left mouse down':
-                Voxel(position=self.position + mouse.normal, texture=blocks[block_id])
-            elif key == 'right mouse down':
                 destroy(self)
+            elif key == 'right mouse down':
+                Voxel(position=self.position + mouse.normal, texture=blocks[block_id])
 
 for z in range(20):
     for x in range(20):
